@@ -67,7 +67,7 @@ async def timezonel(latitude, longitude):
     response_json = None
     try:
         response_json = {"latitude": latitude, "longitude": longitude,
-                     "timezone": tfinderl(latitude=float(latitude), longitude=float(longitude))}
+                         "timezone": tfinderl(latitude=float(latitude), longitude=float(longitude))}
     except BaseException as ex:
         print(ex)
     finally:
@@ -76,7 +76,7 @@ async def timezonel(latitude, longitude):
 
 @app.post("/timezone")
 async def timezone_array(message: JSONStructure = None):
-    '''[{"id" : "0","latitude":"59.93","longitude":"30.332"}]'''
+    """[{"id" : "0","latitude":"59.93","longitude":"30.332"}]"""
     try:
         for item in message:
             item["timezone"] = tfinder(latitude=float(item["latitude"]), longitude=float(item["longitude"]))
@@ -88,7 +88,7 @@ async def timezone_array(message: JSONStructure = None):
 
 @app.post("/timezonel")
 async def timezonel_array(message: JSONStructure = None):
-    '''[{"id" : "0","latitude":"59.93","longitude":"30.332"}]'''
+    """[{"id" : "0","latitude":"59.93","longitude":"30.332"}]"""
     try:
         for item in message:
             item["timezone"] = tfinderl(latitude=float(item["latitude"]), longitude=float(item["longitude"]))
