@@ -20,7 +20,7 @@ stages:
     - echo "flake8 --ignore=E501 ."
     - flake8 --ignore=E501 .
     - echo "python3 -m pytest"
-      - python3 -m pytest
+    - python3 -m pytest
 
 .build: &build
   stage: build
