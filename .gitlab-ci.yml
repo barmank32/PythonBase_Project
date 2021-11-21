@@ -16,7 +16,8 @@ stages:
     - export PROJECT_NAME=$(echo "$CI_PROJECT_NAME" | tr "[:upper:]" "[:lower:]")
     - echo "Building docker image $PROJECT_NAME:$CI_COMMIT_SHORT_SHA"
     - docker build -t $DOCKER_REGISTRY_USER/$PROJECT_NAME:$CI_COMMIT_SHORT_SHA .
-    - docker tag $DOCKER_REGISTRY_USER/$PROJECT_NAME:$CI_COMMIT_SHORT_SHA $DOCKER_REGISTRY/$PROJECT_NAME:release
+    - docker push $DOCKER_REGISTRY_USER/$PROJECT_NAME:$CI_COMMIT_SHORT_SHA
+    - docker tag $DOCKER_REGISTRY_USER/$PROJECT_NAME:$CI_COMMIT_SHORT_SHA $DOCKER_REGISTRY_USER/$PROJECT_NAME:release
     - docker push $DOCKER_REGISTRY_USER/$PROJECT_NAME:release
 
 .deploy: &deploy
