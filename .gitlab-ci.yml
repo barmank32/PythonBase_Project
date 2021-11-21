@@ -14,6 +14,7 @@ stages:
   stage: test
   image: python:3.8.11-slim-buster
   before_script:
+    - pip3 install pipenv
     - pipenv install --system
     - pipenv install -d --system
   script:
