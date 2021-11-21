@@ -5,3 +5,11 @@ services:
     ports:
       - "8000:8000"
     restart: always
+
+  flask:
+    image: %DOCKER_REGISTRY_USER%/%FLASK_NAME%:%TAG%
+    environment:
+      IP_API: '%SERVER_IP%'
+    ports:
+      - "80:5000"
+    restart: always

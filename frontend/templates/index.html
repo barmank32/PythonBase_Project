@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title -%}
+TimeZoneFinder
+{%- endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Узнать временную зону.</h1>
+    <div class="p-3">
+        <form method="post" action="/api/timezone">
+            <div class="mb-3">
+                <label for="latitudeInput" class="form-label">Широта</label>
+                <input name="latitude" class="form-control" id="latitudeInput">
+            </div>
+            <div class="mb-3">
+                <label for="longitudeInput" class="form-label">Долгота</label>
+                <input name="longitude" class="form-control" id="longitudeInput">
+            </div>
+            <button type="submit" class="btn btn-primary">Найти</button>
+        </form>
+    </div>
+    {% if timezone is not none %}
+    <div class="p-3">
+        <h3>Зона времени</h3>
+        {{ timezone }}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
