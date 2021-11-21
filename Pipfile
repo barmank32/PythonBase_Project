@@ -11,6 +11,10 @@ uvicorn = "*"
 pydantic = "*"
 
 [dev-packages]
+pytest = "*"
+starlette = "*"
+requests = "*"
+flake8 = "*"
 
 [requires]
 python_version = "3.8"

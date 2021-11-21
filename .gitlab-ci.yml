@@ -1,4 +1,5 @@
 stages:
+  - test
   - build
   - deploy
 
@@ -8,6 +9,18 @@ stages:
     - docker:18.09-dind
   before_script:
     - echo "$DOCKER_REGISTRY_PASS" | docker login --username $DOCKER_REGISTRY_USER --password-stdin
+
+.test: &test
+  stage: test
+  image: python:3.8.11-slim-buster
+  before_script:
+    - pipenv install --system
+    - pipenv install -d --system
+  script:
+    - echo "flake8 --ignore=E501 ."
+    - flake8 --ignore=E501 .
+    - echo "python3 -m pytest"
+      - python3 -m pytest
 
 .build: &build
   stage: build
@@ -42,6 +55,9 @@ stages:
       docker-compose up -d"
   after_script:
     - rm ~/.ssh/id_rsa
+
+  T:Test
+<<: *test
 
 B:Build:
   <<: *build # боремся с копи-пастой
