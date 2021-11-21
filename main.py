@@ -4,27 +4,27 @@ from typing import List
 import logging
 from timezonefinder import TimezoneFinder, TimezoneFinderL
 from fastapi import FastAPI, Depends
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 app = FastAPI()
 
 
 class Item(BaseModel):
     # id: int
-    latitude: float
-    longitude: float
+    latitude: float = Field(..., description='Широта')
+    longitude: float = Field(..., description='Долгата')
 
 
 class ArrayItem(Item):
-    id: int
+    id: int = Field(..., ge=0, description='Уникальный идентификатор')
 
 
 class RespItem(Item):
-    timezone: str
+    timezone: str = Field(..., description='Временная зона')
 
 
 class RespArrayItem(ArrayItem):
-    timezone: str
+    timezone: str = Field(..., description='Временная зона')
 
 
 JSONRespArray = List[RespArrayItem]
@@ -82,6 +82,7 @@ def tfinder(latitude, longitude):
 
 @app.get("/")
 def read_root():
+    """Root"""
     return {"message": "Welcome"}
 
 
