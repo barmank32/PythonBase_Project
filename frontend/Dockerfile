@@ -1,4 +1,4 @@
-FROM python:3.8-buster
+FROM python:3.8.11-slim-buster
 
 COPY ./requirements.txt /
 RUN pip install -U pip && \
@@ -7,5 +7,5 @@ RUN pip install -U pip && \
 
 WORKDIR /app
 COPY . /app
-
+EXPOSE 5000
 CMD gunicorn --bind 0.0.0.0:5000 app:app

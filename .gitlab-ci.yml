@@ -57,9 +57,11 @@ stages:
     - export FLASK_NAME=$(echo "$CI_PROJECT_NAME" | tr "[:upper:]" "[:lower:]")-flask
     - scp docker-compose.yml ubuntu@$SERVER_IP:~
     - ssh ubuntu@$SERVER_IP "docker pull $DOCKER_REGISTRY_USER/$PROJECT_NAME:$CI_COMMIT_SHORT_SHA;
+      docker pull $DOCKER_REGISTRY_USER/$FLASK_NAME:$CI_COMMIT_SHORT_SHA;
       sed -i 's/%DOCKER_REGISTRY_USER%/${DOCKER_REGISTRY_USER}/' ~/docker-compose.yml;
       sed -i 's/%PROJECT_NAME%/${PROJECT_NAME}/' ~/docker-compose.yml;
       sed -i 's/%TAG%/${CI_COMMIT_SHORT_SHA}/' ~/docker-compose.yml;
+      sed -i 's/%FLASK_NAME%/${FLASK_NAME}/' ~/docker-compose.yml;
       sed -i 's/%SERVER_IP%/${SERVER_IP}/' ~/docker-compose.yml;
       docker-compose down -v;
       docker-compose up -d"
