@@ -56,8 +56,8 @@ stages:
   after_script:
     - rm ~/.ssh/id_rsa
 
-  T:Test
-<<: *test
+T:Test:
+  <<: *test
 
 B:Build:
   <<: *build # боремся с копи-пастой
