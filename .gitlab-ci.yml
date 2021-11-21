@@ -1,0 +1,49 @@
+stages:
+  - build
+  - deploy
+
+.docker_login:
+  image: docker:18.09
+  services:
+    - docker:18.09-dind
+  before_script:
+    - echo "$DOCKER_REGISTRY_PASS" | docker login --username $DOCKER_REGISTRY_USER --password-stdin
+
+.build: &build
+  stage: build
+  extends: .docker_login
+  script:
+    - export PROJECT_NAME=$(echo "$CI_PROJECT_NAME" | tr "[:upper:]" "[:lower:]")
+    - echo "Building docker image $PROJECT_NAME:$CI_COMMIT_SHORT_SHA"
+    - docker build -t $DOCKER_REGISTRY_USER/$PROJECT_NAME:$CI_COMMIT_SHORT_SHA .
+    - docker tag $DOCKER_REGISTRY_USER/$PROJECT_NAME:$CI_COMMIT_SHORT_SHA $DOCKER_REGISTRY/$PROJECT_NAME:release
+    - docker push $DOCKER_REGISTRY_USER/$PROJECT_NAME:release
+
+.deploy: &deploy
+  stage: deploy
+  image: ubuntu:latest
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 700 ~/.ssh/id_rsa
+    - eval $(ssh-agent -s)
+    - ssh-add ~/.ssh/id_rsa
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  script:
+    - export PROJECT_NAME=$(echo "$CI_PROJECT_NAME" | tr "[:upper:]" "[:lower:]")
+    - scp docker-compose.yml ubuntu@$SERVER_IP:~
+    - ssh ubuntu@$SERVER_IP "docker pull $DOCKER_REGISTRY_USER/$PROJECT_NAME:$CI_COMMIT_SHORT_SHA;
+      sed -i "s/%$DOCKER_REGISTRY_USER%/${$DOCKER_REGISTRY_USER}/" ~/docker-compose.yml
+      sed -i "s/%$PROJECT_NAME%/${$PROJECT_NAME}/" ~/docker-compose.yml
+      sed -i "s/%TAG%/${CI_COMMIT_SHORT_SHA}/" ~/docker-compose.yml
+      docker-compose down -v;
+      docker-compose up -d"
+  after_script:
+    - rm ~/.ssh/id_rsa
+
+B:Build:
+  <<: *build # боремся с копи-пастой
+
+D:Deploy:
+  <<: *deploy # боремся с копи-пастой

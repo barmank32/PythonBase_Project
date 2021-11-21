@@ -1,0 +1,7 @@
+version: '3'
+services:
+  fastapi:
+    image: %DOCKER_REGISTRY_USER%/%$PROJECT_NAME%:%TAG%
+    ports:
+      - "8000:8000"
+    restart: always
