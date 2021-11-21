@@ -31,6 +31,12 @@ JSONRespArray = List[RespArrayItem]
 JSONArray = List[ArrayItem]
 JSONStructure = JSONArray
 
+tfl = TimezoneFinderL(in_memory=True)
+TimezoneFinderL.using_numba()
+
+tf = TimezoneFinder(in_memory=True)
+TimezoneFinder.using_numba()
+
 DEBUG = os.environ.get('DEBUG', False)
 
 logging.basicConfig(
@@ -56,10 +62,8 @@ def timing_val(func):
 def tfinderl(latitude, longitude):
     returns = None
     try:
-        tf = TimezoneFinderL(in_memory=True)
-        TimezoneFinderL.using_numba()
         # latitude, longitude = 45.4333, 40.5667
-        returns = tf.timezone_at(lng=longitude, lat=latitude)
+        returns = tfl.timezone_at(lng=longitude, lat=latitude)
     except BaseException as ex:
         logging.exception(ex)
     logging.info(returns)
@@ -70,8 +74,6 @@ def tfinderl(latitude, longitude):
 def tfinder(latitude, longitude):
     returns = None
     try:
-        tf = TimezoneFinder(in_memory=True)
-        TimezoneFinder.using_numba()
         # latitude, longitude = 45.4333, 40.5667
         returns = tf.timezone_at(lng=longitude, lat=latitude)
     except BaseException as ex:
