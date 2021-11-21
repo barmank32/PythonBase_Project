@@ -8,6 +8,7 @@ timezonefinder = "*"
 numba = "*"
 fastapi = "*"
 uvicorn = "*"
+pydantic = "*"
 
 [dev-packages]
 
